@@ -57,11 +57,6 @@ class VLLMWorker(BaseModelWorker):
         self.tokenizer = llm_engine.engine.tokenizer
         self.context_len = get_context_length(llm_engine.engine.model_config.hf_config)
 
-        ### get tokenizer config
-        self.tokenizer_name = llm_engine.engine.model_config.tokenizer
-        self.tokenizer_mode=llm_engine.engine.model_config.tokenizer_mode
-        self.tokenizer_trust_remote_code=llm_engine.engine.model_config.trust_remote_code
-        ###
         if not no_register:
             self.init_heart_beat()
 
@@ -131,8 +126,7 @@ class VLLMWorker(BaseModelWorker):
         from lmformatenforcer.integrations.vllm import build_vllm_logits_processor
         from vllm.transformers_utils.tokenizer import get_tokenizer
         parser = RegexParser(date_regex)
-        tokenizer = get_tokenizer(self.tokenizer_name, tokenizer_mode=self.tokenizer_mode, trust_remote_code=self.tokenizer_trust_remote_code)
-        logits_processor = build_vllm_logits_processor(tokenizer, parser)
+        logits_processor = build_vllm_logits_processor(self.tokenizer, parser)
         sampling_params.logits_processors = [logits_processor]
         ######################
 
